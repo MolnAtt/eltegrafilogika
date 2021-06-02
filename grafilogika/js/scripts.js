@@ -24,6 +24,9 @@ XXXXX`;
     console.log('felso blokkok:');
     console.log(felsoBlokkok(matrix));
 
+    console.log('Az egész:');
+    console.log(tablarajzolas(matrix))
+
     body = document.getElementsByTagName('body')[0];
     body.appendChild(tablarajzolas(matrix));
 }
@@ -40,6 +43,7 @@ function mat2tbl(matrix){
             let td = d.createElement('td');
             td.classList.add(elem == 'X' ? "fekete" : "szurke");
             tr.appendChild(td);
+            //td.innerHTML=elem;
         }
         table.appendChild(tr);
     }
@@ -75,20 +79,15 @@ function felsoBlokkok(matrix){ return transzponal(matrix).map(blokklista); }
 
 function baltabla(ll){
     let table = document.createElement('table');
+    table.classList.add("baltabla")
+
     for (const l of ll) {
         let tr = document.createElement('tr');
         table.appendChild(tr);
-        let td = document.createElement('td');
-        tr.appendChild(td);
-        td.classList.add("sorbaflex")
-        /*for (const e of l) {
-                        
-        }*/
         for (const e of l) {
-            let div = document.createElement('div');
-            div.classList.add('szam');  
-            div.innerHTML = e;
-            td.appendChild(div);
+            let td = document.createElement('td');
+            tr.appendChild(td);
+            td.innerHTML=e;
         }
     }
     return table;
@@ -98,12 +97,13 @@ function baltabla(ll){
 
 function feltabla(ll){
     let table = document.createElement('table');
+    table.classList.add("feltabla")
+
     let tr = document.createElement('tr');
     table.appendChild(tr);
     for (const l of ll) {
         let td = document.createElement('td');
         tr.appendChild(td);
-        td.classList.add("oszlopbaflex")
         for (const e of l) {
             let div = document.createElement('div');
             div.classList.add('szam');  
