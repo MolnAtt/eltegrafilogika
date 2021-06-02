@@ -1,15 +1,19 @@
-d = document;
-d.addEventListener('DOMContentLoaded', main);
+document.addEventListener('DOMContentLoaded', main);
 
+let szin=['feher', 'fekete', 'szurke'];
+let matrixba=['','X','.'];
 
-
-function main(){
-    let kep = `..X..
+let kep = `..X..
 .X.X.
 X...X
 XXXXX
 X...X
 XXXXX`;
+
+let allapotmatrix = [];
+let matrix = [];
+
+function main(){
 
     console.log('input:\n' + kep);
     matrix = kepbolMatrix(kep);
@@ -28,27 +32,71 @@ XXXXX`;
     console.log(tablarajzolas(matrix))
 
     body = document.getElementsByTagName('body')[0];
-    body.appendChild(tablarajzolas(matrix));
+    let [table, am] = tablarajzolas(matrix);
+    allapotmatrix = am;
+    body.appendChild(table);
+
+    //  
+
+    console.log('ez az állapotmátrix a {0,1,2} fölött:')
+    console.log(allapotmatrix);
+
+
+}
+
+
+
+function mezokattintaskor(event){ 
+    let element = event.target;
+    let [x,y] = element.id.split('m');
+    allapotmatrix[x][y] = (allapotmatrix[x][y]+1)%3;
+    element.setAttribute('class', szin[allapotmatrix[x][y]]); 
+    console.log(allapotmatrix);
+
+    if (vegevane()){alert('sikerült!');}
+
+}
+
+
+function vegevane(){
+    let i = 0;
+    let j = 0;
+    while (i<matrix.length && matrixba[allapotmatrix[i][j]]===matrix[i][j]) {
+        if (++j===matrix[0].length) {
+            j = 0;
+            ++i;
+        }    
+    }
+    return i===matrix.length;
 }
 
 function kepbolMatrix(kep){ return kep.split('\n').map(s => s.split('')); }
 
 function mat2tbl(matrix){
-    let table = d.createElement('table');
+    let table = document.createElement('table');
     table.setAttribute('id','tabla');
+    let allapota = {};
+    let allapotmatrix = [];
 
-    for (const sor of matrix) {
-        let tr = d.createElement('tr');
-        for (const elem of sor) {
-            let td = d.createElement('td');
-            td.classList.add(elem == 'X' ? "fekete" : "szurke");
+    for (let i = 0; i < matrix.length; i++) {
+        const sor = matrix[i];
+        let tr = document.createElement('tr');
+        let allapotsor = [];
+        for (let j = 0; j < sor.length; j++) {
+            const elem = sor[j];
+            let td = document.createElement('td');
+            //td.classList.add(elem == 'X' ? "fekete" : "szurke");
             tr.appendChild(td);
+            td.addEventListener('click', mezokattintaskor);
+            td.classList.add('feher');
+            td.setAttribute('id',i+'m'+j);
+            allapotsor.push(0);
             //td.innerHTML=elem;
-        }
+        }    
+        allapotmatrix.push(allapotsor);
         table.appendChild(tr);
     }
-
-    return table;
+    return [table, allapotmatrix];
 }
 
 
@@ -155,7 +203,9 @@ function tablarajzolas(matrix)
     
     td = document.createElement('td');
     tr.appendChild(td);
-    td.appendChild(mat2tbl(matrix));
+    let [tbl, allapotmatrix] = mat2tbl(matrix);
+    td.appendChild(tbl);
+
     
-    return table;
+    return [table, allapotmatrix];
 }
